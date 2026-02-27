@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ankku Dii: Happy Soul</title>
+    <style>
+        :root {
+            --ludo-red: #ff4d4d;
+            --ludo-green: #2ecc71;
+            --ludo-blue: #3498db;
+            --ludo-yellow: #f1c40f;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            font-family: 'Arial Black', sans-serif;
+            color: white;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        /* PAGE 1: BOSS SCREEN */
+        #page1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            z-index: 2;
+        }
+
+        /* PAGE 2: ANKKU DII MESSAGE */
+        #page2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #1a1a2e 0%, #050505 100%);
+            transform: translateX(100%) rotateY(-90deg);
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        .active-p1 #page1 { transform: translateX(-100%) rotateY(90deg); opacity: 0; }
+        .active-p2 #page2 { transform: translateX(0) rotateY(0deg); }
+
+        /* 3D DICE ANIMATION */
+        #dice-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 80px;
+            height: 80px;
+            transform-style: preserve-3d;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .dice-rolling #dice-container {
+            animation: dice-fly-by 1.2s ease-in-out forwards;
+        }
+
+        .face {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            color: black;
+            border-radius: 8px;
+        }
+
+        .front  { transform: rotateY(0deg) translateZ(40px); }
+        .back   { transform: rotateY(180deg) translateZ(40px); }
+        .right  { transform: rotateY(90deg) translateZ(40px); }
+        .left   { transform: rotateY(-90deg) translateZ(40px); }
+        .top    { transform: rotateX(90deg) translateZ(40px); }
+        .bottom { transform: rotateX(-90deg) translateZ(40px); }
+
+        @keyframes dice-fly-by {
+            0% { transform: translate(-50%, -50%) scale(0) rotateX(0deg); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(2.5) rotateX(360deg) rotateY(720deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0) rotateX(720deg); opacity: 0; }
+        }
+
+        /* 3D TEXT STYLING */
+        .text-3d {
+            font-size: 3rem;
+            animation: ludo-glow 3s infinite alternate;
+            text-shadow: 3px 3px 0px #222;
+            margin-bottom: 10px;
+        }
+
+        @keyframes ludo-glow {
+            0% { color: var(--ludo-red); text-shadow: 0 0 15px var(--ludo-red); }
+            50% { color: var(--ludo-green); text-shadow: 0 0 20px var(--ludo-green); }
+            100% { color: var(--ludo-blue); text-shadow: 0 0 15px var(--ludo-blue); }
+        }
+
+        #vibe-text {
+            font-size: 1.8rem;
+            color: var(--ludo-yellow);
+            max-width: 90%;
+            text-shadow: 0 0 15px var(--ludo-yellow);
+            animation: pulse 2s infinite ease-in-out;
+            line-height: 1.4;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #f1c40f, #e67e22);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            font-weight: bold;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .back-btn { background: #444; margin-top: 40px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div id="dice-container">
+        <div class="face front">🎲</div>
+        <div class="face back">⚅</div>
+        <div class="face right">⚄</div>
+        <div class="face left">⚃</div>
+        <div class="face top">⚂</div>
+        <div class="face bottom">⚁</div>
+    </div>
+
+    <div id="page1">
+        <h1 class="text-3d">GOOD NIGHT BOSS</h1>
+        <p style="letter-spacing: 5px; color: #00ff88;">TAKE CARE</p>
+        <button class="btn" onclick="startTransition()">ANKKU DII SPECIAL 🎲</button>
+    </div>
+
+    <div id="page2">
+        <div id="vibe-text">
+            "Duniya ki sabse 'Happy Soul' aur Ludo ki sabse badi 'Danger Player'—humari Ankku Dii! 😊🔥"
+        </div>
+        <button class="btn back-btn" onclick="goBack()">← BACK TO BOSS</button>
+    </div>
+
+<script>
+    function startTransition() {
+        // Haptic feedback for Android
+        if (navigator.vibrate) navigator.vibrate(50);
+
+        document.body.classList.add('dice-rolling');
+
+        // Page flip timing
+        setTimeout(() => {
+            document.body.classList.add('active-p1');
+            document.body.classList.add('active-p2');
+        }, 500); 
+
+        // Clean up dice
+        setTimeout(() => {
+            document.body.classList.remove('dice-rolling');
+        }, 1200);
+    }
+
+    function goBack() {
+        document.body.classList.remove('active-p1');
+        document.body.classList.remove('active-p2');
+    }
+</script>
+
+</body>
+</html>
